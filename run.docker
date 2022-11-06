@@ -3,18 +3,13 @@ FROM debian:bullseye-slim
 # install dependencies
 RUN apt-get update && apt-get install -y \
   bash \
-  curl wget xz-utils \
-  gcc make libc6-dev libcurl4 \
-  git libxml2 \
   libssl-dev zlib1g-dev openssl \
   && rm -rf /var/lib/apt/lists/* && apt autoremove -y && apt clean
 
-
-# install dlang
-RUN curl -fsS https://dlang.org/install.sh | bash -s install ldc-1.30.0 \
-  && echo "source ~/dlang/ldc-1.30.0/activate" >> ~/.bashrc
+# expose environment
+EXPOSE 8080
 
 # set up main to run bash
 ENTRYPOINT ["/bin/bash"]
 # default arguments to run inside bash
-CMD ["-l", "-c", "cd /prj/demo/hello && dub build"]
+CMD ["-l", "-c", "cd /prj/demo/hello && ./hello"]
