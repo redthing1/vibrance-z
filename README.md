@@ -1,10 +1,12 @@
-vibrant.d - A light framework on top of vibe.d
-==============================================
+# vibrance-z
+
+ a revival of vibrant.d
+
+ ## overview
 
 vibrant.d is a light routing framework that mimicks the style of frameworks like Sinatra and Spark.
 
-Hello World
------------
+### Hello World
 
 A plain 'Hello World!' application in vibe.d alone might look something like this,
 
@@ -282,3 +284,4 @@ License
 -------
 
 MIT
+
