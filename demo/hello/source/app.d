@@ -6,8 +6,9 @@ void main(string[] args) {
 	writefln("args: %s", args);
 	auto settings = new HTTPServerSettings;
 	settings.port = 8080;
-
-	with (Vibrant(settings)) {
+	
+	auto vib = Vibrant(settings);
+	with (vib) {
 		Get("/hello", (req, res) => "Hello World!");
 
 		Before("/hello/:name", (req, res) {
@@ -19,13 +20,10 @@ void main(string[] args) {
 		Get("/hello/:name", (req, res) =>
 				"Hello " ~ req.params["name"]
 		);
-
-		scope (exit) {
-			Stop();
-		}
 	}
 
 	// listenHTTP is called automatically
-
 	runApplication();
+
+	scope(exit) vib.Stop();
 }
