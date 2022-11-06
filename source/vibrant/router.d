@@ -609,7 +609,7 @@ class VibrantRouter(bool GenerateAll = false) : HTTPServerRequestHandler
 		Result delegate(HTTPServerRequest, HTTPServerResponse) callback)
 	if(isValidResultType!Result)
 	{
-		router.match(method, path, (req, res) {
+		router.match(method, path, (HTTPServerRequest req, HTTPServerResponse res) {
 			try
 			{
 				// Invoke before-filters.

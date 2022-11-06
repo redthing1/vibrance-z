@@ -5,3 +5,8 @@ copyright "Copyright © 2022, redthing1"
 license "proprietary"
 
 dependency "vibrant" path="../.."
+
+configuration "demo" {
+	targetType "executable"
+	versions "VibeDefaultMain"
+}

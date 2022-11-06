@@ -1,7 +1,15 @@
 .dub
 docs.json
 __dummy.html
+docs/
+/vibrant
+vibrant.so
+vibrant.dylib
+vibrant.dll
+vibrant.a
+vibrant.lib
+vibrant-test-*
+*.exe
 *.o
 *.obj
-vibrant-d
-*.a
+*.lst
