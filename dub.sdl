@@ -3,7 +3,7 @@ description "A light web framework that works on top of vibe.d."
 authors "Mihail K"
 copyright "Copyright © 2015, Mihail K."
 license "MIT"
-dependency "vibe-d" version="~>0.7.24-beta.1"
+dependency "vibe-d" version="~>0.9.5"
 dependency "dquery" version="~>0.1.8"
 configuration "demo" {
 	targetType "executable"

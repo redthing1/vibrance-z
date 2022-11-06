@@ -372,19 +372,19 @@ Parameter createParameters(HTTPServerRequest request)
 	auto assoc = new Parameter();
 
 	// Include form parameters.
-	foreach(key, value; request.form)
+	foreach(key, value; request.form.byKeyValue)
 	{
 		normalizeParameters(assoc, key, value);
 	}
 
 	// Include request parameters.
-	foreach(key, value; request.query)
+	foreach(key, value; request.query.byKeyValue)
 	{
 		normalizeParameters(assoc, key, value);
 	}
 
 	// Include URL parameters.
-	foreach(key, value; request.params)
+	foreach(key, value; request.params.byKeyValue)
 	{
 		normalizeParameters(assoc, key, value);
 	}
