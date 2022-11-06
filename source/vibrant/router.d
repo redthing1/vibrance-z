@@ -20,6 +20,10 @@ extern(C) int _d_isbaseof(ClassInfo oc, ClassInfo c);
  ++/
 class VibrantRouter(bool GenerateAll = false) : HTTPServerRequestHandler
 {
+	/++
+		+ The URL router that manages Vibrant's routes.
+		++/
+	URLRouter router;
 
 	private
 	{
@@ -49,11 +53,6 @@ class VibrantRouter(bool GenerateAll = false) : HTTPServerRequestHandler
 			}
 
 		}
-
-		/++
-		 + The URL router that manages Vibrant's routes.
-		 ++/
-		URLRouter router;
 
 		/++
 		 + A saved listener, used to stop and restart the server.
