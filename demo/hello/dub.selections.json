@@ -17,6 +17,6 @@
 		"taggedalgebraic": "0.11.22",
 		"vibe-core": "1.22.5",
 		"vibe-d": "0.9.5",
-		"vibrant": {"path":"../.."}
+		"vibrance-z": {"path":"../.."},
 	}
 }
