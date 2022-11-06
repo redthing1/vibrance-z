@@ -1,33 +1,66 @@
+import std.stdio;
+import std.typecons;
+import std.json;
 import vibe.d;
 import vibrant.d;
-import std.stdio;
+import mir.ser.json: serializeJson;
 
-// class BookController {
-// 	mixin Routes;
+struct Book {
+	string id;
+}
 
-// 	// GET /book
-// 	void index() {
-// 		Book[] books = Book.all;
+struct Bookshelf {
+	static Book[] all = [Book("apple"), Book("banana"), Book("cherry")];
 
-// 		render!JSON = books.toJson;
-// 	}
+	static Nullable!Book find(string id) {
+		foreach (book; all) {
+			if (book.id == id) {
+				return Nullable!Book(book);
+			}
+		}
+		return Nullable!Book.init;
+	}
 
-// 	// GET /book/:id
-// 	void show() {
-// 		string id = params["id"];
-// 		Book book = Book.find(id);
+	static bool destroy(string id) {
+		foreach (i, book; all) {
+			if (book.id == id) {
+				all = all[0 .. i] ~ all[i + 1 .. $];
+				return true;
+			}
+		}
+		return false;
+	}
+}
 
-// 		render!JSON = book.toJson;
-// 	}
+class BookController {
+	mixin Routes;
 
-// 	// DELETE /book/:id
-// 	void destroy() {
-// 		string id = params["id"];
-// 		Book.destroy(id);
+	// GET /book
+	void index() {
+		auto books = Bookshelf.all;
 
-// 		render!EMPTY = 201;
-// 	}
-// }
+		render!JSON = books.serializeJson;
+	}
+
+	// GET /book/:id
+	void show() {
+		auto id = params["id"].as!string;
+		auto book = Bookshelf.find(id);
+
+		render!JSON = book.serializeJson;
+	}
+
+	// DELETE /book/:id
+	void destroy() {
+		auto id = params["id"].as!string;
+		
+		if (Bookshelf.destroy(id)) {
+			render!EMPTY = 201;
+		} else {
+			render!EMPTY = 404;
+		}
+	}
+}
 
 void main(string[] args) {
 	writefln("args: %s", args);
@@ -74,7 +107,7 @@ void main(string[] args) {
 			}
 		}
 
-		// Resource!BookController;
+		Resource!BookController;
 	}
 
 	// listenHTTP is called automatically
