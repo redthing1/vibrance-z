@@ -715,7 +715,7 @@ class VibrantRouter(bool GenerateAll = false) : HTTPServerRequestHandler
 				Result delegate(Temp) transformer)
 			if(isValidTransformedType!Result)
 			{
-				router.match(method, path, (req, res) {
+				router.match(method, path, (HTTPServerRequest req, HTTPServerResponse res) {
 					try
 					{
 						// Invoke before-filters.
