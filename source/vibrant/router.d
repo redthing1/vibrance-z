@@ -1,4 +1,3 @@
-
 module vibrant.router;
 
 import std.algorithm;
@@ -13,26 +12,23 @@ import vibe.d;
 import vibrant.helper;
 
 // TODO : This is probably a hack.
-extern(C) int _d_isbaseof(ClassInfo oc, ClassInfo c);
+extern (C) int _d_isbaseof(ClassInfo oc, ClassInfo c);
 
 /++
  + The vibrant router class.
  ++/
-class VibrantRouter(bool GenerateAll = false) : HTTPServerRequestHandler
-{
+class VibrantRouter(bool GenerateAll = false) : HTTPServerRequestHandler {
 	/++
 		+ The URL router that manages Vibrant's routes.
 		++/
 	URLRouter router;
 
-	private
-	{
+	private {
 
 		/++
 		 + An internal throwable type used to halt execution.
 		 ++/
-		class HaltThrowable : Throwable
-		{
+		class HaltThrowable : Throwable {
 
 			/++
 			 + The status code sent in the response.
@@ -46,8 +42,7 @@ class VibrantRouter(bool GenerateAll = false) : HTTPServerRequestHandler
 			 +     status = The status code to send to the client.
 			 +     msg    = A message body to include in the response.
 			 ++/
-			this(int status, string msg)
-			{
+			this(int status, string msg) {
 				super(msg);
 				this.status = status;
 			}
@@ -77,8 +72,7 @@ class VibrantRouter(bool GenerateAll = false) : HTTPServerRequestHandler
 		/++
 		 + Tests if a type is a valid result from a callback.
 		 ++/
-		template isValidResultType(Result)
-		{
+		template isValidResultType(Result) {
 			enum isValidResultType =
 				is(Result == const(ubyte[])) ||
 				is(Result == ubyte[]) ||
@@ -89,8 +83,7 @@ class VibrantRouter(bool GenerateAll = false) : HTTPServerRequestHandler
 		/++
 		 + Tests if a type is a valid result from a transform function.
 		 ++/
-		template isValidTransformedType(Temp)
-		{
+		template isValidTransformedType(Temp) {
 			enum isValidTransformedType =
 				is(Temp == const(ubyte[])) ||
 				is(Temp == ubyte[]) ||
@@ -105,18 +98,16 @@ class VibrantRouter(bool GenerateAll = false) : HTTPServerRequestHandler
 	 + Params:
 	 +     router = A URLRouter to forward requests to.
 	 ++/
-	package this(URLRouter router)
-	{
+	package this(URLRouter router) {
 		this.router = router;
 
 		// Preload the HaltThrowable handler.
 		Catch(HaltThrowable.classinfo, (t, req, res) {
 			// Get the HaltThrowable object.
-			HaltThrowable ht = cast(HaltThrowable)t;
+			HaltThrowable ht = cast(HaltThrowable) t;
 
 			// Check for a status code.
-			if(ht.status != 0)
-			{
+			if (ht.status != 0) {
 				res.statusCode = ht.status;
 			}
 
@@ -132,8 +123,7 @@ class VibrantRouter(bool GenerateAll = false) : HTTPServerRequestHandler
 	 +     settings = The settings for the HTTP server.
 	 +     prefix   = The prefix to place all routes at.
 	 ++/
-	package this(HTTPServerSettings settings, string prefix)
-	{
+	package this(HTTPServerSettings settings, string prefix) {
 		this(new URLRouter(prefix));
 		savedListener = listenHTTP(settings, router);
 	}
@@ -145,8 +135,7 @@ class VibrantRouter(bool GenerateAll = false) : HTTPServerRequestHandler
 	 +     req = The HTTPServerRequest object.
 	 +     res = The HTTPServerResponse object.
 	 ++/
-	void handleRequest(HTTPServerRequest req, HTTPServerResponse res)
-	{
+	void handleRequest(HTTPServerRequest req, HTTPServerResponse res) {
 		router.handleRequest(req, res);
 	}
 
@@ -159,8 +148,7 @@ class VibrantRouter(bool GenerateAll = false) : HTTPServerRequestHandler
 	 + Returns:
 	 +     A new VibrantRouter object.
 	 ++/
-	auto Scope(string prefix)
-	{
+	auto Scope(string prefix) {
 		// Create a subrouter and forward requests that match its prefix.
 		auto subrouter = new URLRouter(router.prefix ~ prefix);
 		router.any("*", subrouter);
@@ -174,16 +162,14 @@ class VibrantRouter(bool GenerateAll = false) : HTTPServerRequestHandler
 	/++
 	 + Instantly updates the installed routes (instead of lazily).
 	 ++/
-	void Flush()
-	{
+	void Flush() {
 		router.rebuild;
 	}
 
 	/++
 	 + Instantly stops the server.
 	 ++/
-	void Stop()
-	{
+	void Stop() {
 		savedListener.get.stopListening;
 		savedListener.nullify;
 	}
@@ -195,8 +181,7 @@ class VibrantRouter(bool GenerateAll = false) : HTTPServerRequestHandler
 	 +     type     = The type of exception to catch.
 	 +     callback = The handler for the exception.
 	 ++/
-	void Catch(ClassInfo type, ExceptionCallback callback)
-	{
+	void Catch(ClassInfo type, ExceptionCallback callback) {
 		// Add the callback to the type list.
 		exceptionCallbacks[type] = callback;
 	}
@@ -207,8 +192,7 @@ class VibrantRouter(bool GenerateAll = false) : HTTPServerRequestHandler
 	 + Params:
 	 +     callback = The filter that handles the event.
 	 ++/
-	void Before(VoidCallback callback)
-	{
+	void Before(VoidCallback callback) {
 		addFilterCallback(beforeCallbacks, null, callback);
 	}
 
@@ -219,8 +203,7 @@ class VibrantRouter(bool GenerateAll = false) : HTTPServerRequestHandler
 	 +     path     = The path that this filter is specific to.
 	 +     callback = The filter that handles the event.
 	 ++/
-	void Before(string path, VoidCallback callback)
-	{
+	void Before(string path, VoidCallback callback) {
 		addFilterCallback(beforeCallbacks, path, callback);
 	}
 
@@ -230,8 +213,7 @@ class VibrantRouter(bool GenerateAll = false) : HTTPServerRequestHandler
 	 + Params:
 	 +     callback = The filter that handles the event.
 	 ++/
-	void After(VoidCallback callback)
-	{
+	void After(VoidCallback callback) {
 		addFilterCallback(afterCallbacks, null, callback);
 	}
 
@@ -242,8 +224,7 @@ class VibrantRouter(bool GenerateAll = false) : HTTPServerRequestHandler
 	 +     path     = The path that this filter is specific to.
 	 +     callback = The filter that handles the event.
 	 ++/
-	void After(string path, VoidCallback callback)
-	{
+	void After(string path, VoidCallback callback) {
 		addFilterCallback(afterCallbacks, path, callback);
 	}
 
@@ -255,8 +236,7 @@ class VibrantRouter(bool GenerateAll = false) : HTTPServerRequestHandler
 	 + Params:
 	 +     message = A message body to optionally include. Defaults to empty.
 	 ++/
-	void halt(string message = "")
-	{
+	void halt(string message = "") {
 		throw new HaltThrowable(0, message);
 	}
 
@@ -269,20 +249,16 @@ class VibrantRouter(bool GenerateAll = false) : HTTPServerRequestHandler
 	 +     status  = The status code sent with the message.
 	 +     message = A message body to optionally include. Defaults to empty.
 	 ++/
-	void halt(int status, string message = "")
-	{
+	void halt(int status, string message = "") {
 		throw new HaltThrowable(status, message);
 	}
 
-	void Resource(Type)()
-	{
+	void Resource(Type)() {
 		Type.install(this);
 	}
 
-	void Resources(TList...)()
-	{
-		foreach(Type; TList)
-		{
+	void Resources(TList...)() {
+		foreach (Type; TList) {
 			Resource!Type;
 		}
 	}
@@ -296,8 +272,7 @@ class VibrantRouter(bool GenerateAll = false) : HTTPServerRequestHandler
 	 ++/
 	void Any(Result)(string path,
 		Result function(HTTPServerRequest, HTTPServerResponse) callback)
-	if(isValidResultType!Result)
-	{
+			if (isValidResultType!Result) {
 		return Any!(Result)(path, null, callback);
 	}
 
@@ -311,10 +286,8 @@ class VibrantRouter(bool GenerateAll = false) : HTTPServerRequestHandler
 	 ++/
 	void Any(Result)(string path, string contentType,
 		Result function(HTTPServerRequest, HTTPServerResponse) callback)
-	if(isValidResultType!Result)
-	{
-		foreach(method; EnumMembers!HTTPMethod)
-		{
+			if (isValidResultType!Result) {
+		foreach (method; EnumMembers!HTTPMethod) {
 			// Match each HTTP method type.
 			Match(method, path, contentType, callback);
 		}
@@ -329,8 +302,7 @@ class VibrantRouter(bool GenerateAll = false) : HTTPServerRequestHandler
 	 ++/
 	void Any(Result)(string path, string contentType,
 		Result delegate(HTTPServerRequest, HTTPServerResponse) callback)
-	if(isValidResultType!Result)
-	{
+			if (isValidResultType!Result) {
 		return Any!(Result)(path, null, callback);
 	}
 
@@ -344,20 +316,15 @@ class VibrantRouter(bool GenerateAll = false) : HTTPServerRequestHandler
 	 ++/
 	void Any(Result)(string path, string contentType,
 		Result delegate(HTTPServerRequest, HTTPServerResponse) callback)
-	if(isValidResultType!Result)
-	{
-		foreach(method; EnumMembers!HTTPMethod)
-		{
+			if (isValidResultType!Result) {
+		foreach (method; EnumMembers!HTTPMethod) {
 			// Match each HTTP method type.
 			Match(method, path, contentType, callback);
 		}
 	}
 
-	template Any(Temp)
-	if(isValidTransformedType!Result)
-	{
-		static if(!is(Temp == void))
-		{
+	template Any(Temp) if (isValidTransformedType!Result) {
+		static if (!is(Temp == void)) {
 			/++
 			 + Adds a handler for all method types on the given path.
 			 +
@@ -369,8 +336,7 @@ class VibrantRouter(bool GenerateAll = false) : HTTPServerRequestHandler
 			void Any(Result = string)(string path,
 				Temp function(HTTPServerRequest, HTTPServerResponse) callback,
 				Result function(Temp) transformer)
-			if(isValidTransformedType!Result)
-			{
+					if (isValidTransformedType!Result) {
 				return Any!(Result)(path, null, callback, transformer);
 			}
 
@@ -386,10 +352,8 @@ class VibrantRouter(bool GenerateAll = false) : HTTPServerRequestHandler
 			void Any(Result = string)(string path, string contentType,
 				Temp function(HTTPServerRequest, HTTPServerResponse) callback,
 				Result function(Temp) transformer)
-			if(isValidTransformedType!Result)
-			{
-				foreach(method; EnumMembers!HTTPMethod)
-				{
+					if (isValidTransformedType!Result) {
+				foreach (method; EnumMembers!HTTPMethod) {
 					// Match each HTTP method type.
 					Match!(Temp)(method, path, contentType, callback, transformer);
 				}
@@ -406,8 +370,7 @@ class VibrantRouter(bool GenerateAll = false) : HTTPServerRequestHandler
 			void Any(Result = string)(string path,
 				Temp delegate(HTTPServerRequest, HTTPServerResponse) callback,
 				Result delegate(Temp) transformer)
-			if(isValidTransformedType!Result)
-			{
+					if (isValidTransformedType!Result) {
 				return Any!(Result)(path, null, callback, transformer);
 			}
 
@@ -423,10 +386,8 @@ class VibrantRouter(bool GenerateAll = false) : HTTPServerRequestHandler
 			void Any(Result = string)(string path, string contentType,
 				Temp delegate(HTTPServerRequest, HTTPServerResponse) callback,
 				Result delegate(Temp) transformer)
-			if(isValidTransformedType!Result)
-			{
-				foreach(method; EnumMembers!HTTPMethod)
-				{
+					if (isValidTransformedType!Result) {
+				foreach (method; EnumMembers!HTTPMethod) {
 					// Match each HTTP method type.
 					Match!(Temp)(method, path, contentType, callback, transformer);
 				}
@@ -440,8 +401,7 @@ class VibrantRouter(bool GenerateAll = false) : HTTPServerRequestHandler
 	 + Params:
 	 +     method = The name of the method to produce.
 	 ++/
-	private template GetHTTPMethodCode(string method)
-	{
+	private template GetHTTPMethodCode(string method) {
 		import std.string;
 
 		enum GetHTTPMethodCode = format(`
@@ -515,36 +475,31 @@ class VibrantRouter(bool GenerateAll = false) : HTTPServerRequestHandler
 					}
 				}
 			}
-		`,
-			// The Titlecase function name.
-			method[0 .. 1].toUpper ~ method[1 .. $].toLower,
-			// The UPPERCASE HTTP method name.
-			method.toUpper
-		);
+		`,// The Titlecase function name.
+				method[0 .. 1].toUpper ~ method[1 .. $].toLower,// The UPPERCASE HTTP method name.
+				method.toUpper
+			);
 	}
 
-	static if(GenerateAll)
-	{
+	static if (GenerateAll) {
 		// Include all supported methods.
 		private enum HTTPEnabledMethodList = __traits(allMembers, HTTPMethod);
-	}
-	else
-	{
+	} else {
 		// Include only common methods.
 		private enum HTTPEnabledMethodList = TypeTuple!(
-			"GET", "POST", "PUT", "PATCH", "DELETE",
-			"HEAD", "OPTIONS", "CONNECT", "TRACE"
-		);
+				"GET", "POST", "PUT", "PATCH", "DELETE",
+				"HEAD", "OPTIONS", "CONNECT", "TRACE"
+			);
 	}
 
 	// Generate methods.
 	mixin(
 		joiner([
-			staticMap!(
+				staticMap!(
 				GetHTTPMethodCode,
 				HTTPEnabledMethodList
-			)
-		]).text
+				)
+			]).text
 	);
 
 	/++
@@ -557,8 +512,7 @@ class VibrantRouter(bool GenerateAll = false) : HTTPServerRequestHandler
 	 ++/
 	void Match(Result)(HTTPMethod method, string path,
 		Result function(HTTPServerRequest, HTTPServerResponse) callback)
-	if(isValidResultType!Result)
-	{
+			if (isValidResultType!Result) {
 		// Wrap the function in a delegate.
 		Match!(Result)(method, path, null, callback);
 	}
@@ -574,8 +528,7 @@ class VibrantRouter(bool GenerateAll = false) : HTTPServerRequestHandler
 	 ++/
 	void Match(Result)(HTTPMethod method, string path, string contentType,
 		Result function(HTTPServerRequest, HTTPServerResponse) callback)
-	if(isValidResultType!Result)
-	{
+			if (isValidResultType!Result) {
 		// Wrap the function in a delegate.
 		Match!(Result)(method, path, contentType, toDelegate(callback));
 	}
@@ -590,8 +543,7 @@ class VibrantRouter(bool GenerateAll = false) : HTTPServerRequestHandler
 	 ++/
 	void Match(Result)(HTTPMethod method, string path,
 		Result delegate(HTTPServerRequest, HTTPServerResponse) callback)
-	if(isValidResultType!Result)
-	{
+			if (isValidResultType!Result) {
 		return Match!(Result)(method, path, null, callback);
 	}
 
@@ -606,21 +558,16 @@ class VibrantRouter(bool GenerateAll = false) : HTTPServerRequestHandler
 	 ++/
 	void Match(Result)(HTTPMethod method, string path, string contentType,
 		Result delegate(HTTPServerRequest, HTTPServerResponse) callback)
-	if(isValidResultType!Result)
-	{
+			if (isValidResultType!Result) {
 		router.match(method, path, (HTTPServerRequest req, HTTPServerResponse res) {
-			try
-			{
+			try {
 				// Invoke before-filters.
 				applyFilterCallback(beforeCallbacks, path, req, res);
-				
-				static if(!is(Result == void))
-				{
+
+				static if (!is(Result == void)) {
 					// Call the callback and save the result.
 					auto result = callback(req, res);
-				}
-				else
-				{
+				} else {
 					// Call the callback; no result.
 					callback(req, res);
 					auto result = "";
@@ -631,19 +578,14 @@ class VibrantRouter(bool GenerateAll = false) : HTTPServerRequestHandler
 
 				// Just send an empty response.
 				res.writeBody(result, contentType);
-			}
-			catch(Throwable t)
-			{
+			} catch (Throwable t) {
 				handleException(t, req, res);
 			}
 		});
 	}
 
-	template Match(Temp)
-	if(!is(Temp == void))
-	{
-		static if(!is(Temp == void))
-		{
+	template Match(Temp) if (!is(Temp == void)) {
+		static if (!is(Temp == void)) {
 			/++
 			 + Matches a path and method type using a function callback.
 			 +
@@ -656,8 +598,7 @@ class VibrantRouter(bool GenerateAll = false) : HTTPServerRequestHandler
 			void Match(Result = string)(HTTPMethod method, string path,
 				Temp function(HTTPServerRequest, HTTPServerResponse) callback,
 				Result function(Temp) transformer)
-			if(isValidTransformedType!Result)
-			{
+					if (isValidTransformedType!Result) {
 				Match!(Result)(method, path, null, callback, transformer);
 			}
 
@@ -674,8 +615,7 @@ class VibrantRouter(bool GenerateAll = false) : HTTPServerRequestHandler
 			void Match(Result = string)(HTTPMethod method, string path, string contentType,
 				Temp function(HTTPServerRequest, HTTPServerResponse) callback,
 				Result function(Temp) transformer)
-			if(isValidTransformedType!Result)
-			{
+					if (isValidTransformedType!Result) {
 				// Wrap the function in a delegate.
 				Match!(Result)(
 					method, path, contentType, toDelegate(callback), toDelegate(transformer)
@@ -694,8 +634,7 @@ class VibrantRouter(bool GenerateAll = false) : HTTPServerRequestHandler
 			void Match(Result = string)(HTTPMethod method, string path,
 				Temp delegate(HTTPServerRequest, HTTPServerResponse) callback,
 				Result delegate(Temp) transformer)
-			if(isValidTransformedType!Result)
-			{
+					if (isValidTransformedType!Result) {
 				Match!(Result)(method, path, null, callback, transformer);
 			}
 
@@ -712,11 +651,9 @@ class VibrantRouter(bool GenerateAll = false) : HTTPServerRequestHandler
 			void Match(Result = string)(HTTPMethod method, string path, string contentType,
 				Temp delegate(HTTPServerRequest, HTTPServerResponse) callback,
 				Result delegate(Temp) transformer)
-			if(isValidTransformedType!Result)
-			{
+					if (isValidTransformedType!Result) {
 				router.match(method, path, (HTTPServerRequest req, HTTPServerResponse res) {
-					try
-					{
+					try {
 						// Invoke before-filters.
 						applyFilterCallback(beforeCallbacks, path, req, res);
 
@@ -728,9 +665,7 @@ class VibrantRouter(bool GenerateAll = false) : HTTPServerRequestHandler
 
 						// Just send the response.
 						res.writeBody(result, contentType);
-					}
-					catch(Throwable t)
-					{
+					} catch (Throwable t) {
 						handleException(t, req, res);
 					}
 				});
@@ -738,8 +673,7 @@ class VibrantRouter(bool GenerateAll = false) : HTTPServerRequestHandler
 		}
 	}
 
-	private
-	{
+	private {
 
 		/++
 		 + Adds a filter to a filter callback table.
@@ -749,18 +683,14 @@ class VibrantRouter(bool GenerateAll = false) : HTTPServerRequestHandler
 		 +     path        = The path the callback runs on.
 		 +     callback    = The callback to add.
 		 ++/
-		void addFilterCallback(ref VoidCallback[][string] filterTable,
-			/+ @Nullable +/ string path, VoidCallback callback)
-		{
+		void addFilterCallback(ref VoidCallback[][string] filterTable,/+ @Nullable +/
+			string path, VoidCallback callback) {
 			// Check if the path has callbacks.
 			auto ptr = path in filterTable;
 
-			if(ptr is null)
-			{
-				filterTable[path] = [ callback ];
-			}
-			else
-			{
+			if (ptr is null) {
+				filterTable[path] = [callback];
+			} else {
 				*ptr ~= callback;
 			}
 		}
@@ -775,29 +705,26 @@ class VibrantRouter(bool GenerateAll = false) : HTTPServerRequestHandler
 		 +     res   = The server response object. 
 		 ++/
 		void applyFilterCallback(ref VoidCallback[][string] table, string path,
-			HTTPServerRequest req, HTTPServerResponse res)
-		{
+			HTTPServerRequest req, HTTPServerResponse res) {
 			// Search for matching callbacks.
-			foreach(callbackPath, callbacks; table)
-			{
+			foreach (callbackPath, callbacks; table) {
 				bool matches = true;
 
-				if(callbackPath !is null)
-				{
+				if (callbackPath !is null) {
 					// Substitue wildwards.
 					import std.array : replace;
+
 					string pattern = callbackPath.replace("*", ".*?");
 
 					// Check the pattern for a match.
 					import std.regex : matchFirst;
+
 					matches = !path.matchFirst(pattern).empty;
 				}
 
-				if(matches)
-				{
+				if (matches) {
 					// Invoke matched callbacks.
-					foreach(callback; callbacks)
-					{
+					foreach (callback; callbacks) {
 						callback(req, res);
 					}
 				}
@@ -812,12 +739,9 @@ class VibrantRouter(bool GenerateAll = false) : HTTPServerRequestHandler
 		 +     req = The server request object.
 		 +     res = The server response object.
 		 ++/
-		void handleException(Throwable t, HTTPServerRequest req, HTTPServerResponse res)
-		{
-			foreach(typeinfo, handler; exceptionCallbacks)
-			{
-				if(_d_isbaseof(t.classinfo, typeinfo))
-				{
+		void handleException(Throwable t, HTTPServerRequest req, HTTPServerResponse res) {
+			foreach (typeinfo, handler; exceptionCallbacks) {
+				if (_d_isbaseof(t.classinfo, typeinfo)) {
 					// Forward error to handler.
 					handler(t, req, res);
 					return;

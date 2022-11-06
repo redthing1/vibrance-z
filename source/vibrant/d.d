@@ -1,4 +1,3 @@
-
 module vibrant.d;
 
 public import vibe.d;
@@ -18,8 +17,7 @@ public import vibrant.routes;
  +     An instance of the vibrant router.
  ++/
 VibrantRouter!GenerateAll Vibrant(bool GenerateAll = false)(
-	string prefix = null)
-{
+	string prefix = null) {
 	return Vibrant!GenerateAll(8085u, prefix);
 }
 
@@ -35,8 +33,7 @@ VibrantRouter!GenerateAll Vibrant(bool GenerateAll = false)(
  +     An instance of the vibrant router.
  ++/
 VibrantRouter!GenerateAll Vibrant(bool GenerateAll = false)(
-	ushort port, string prefix = null)
-{
+	ushort port, string prefix = null) {
 	HTTPServerSettings settings = new HTTPServerSettings;
 	settings.port = port;
 
@@ -54,7 +51,6 @@ VibrantRouter!GenerateAll Vibrant(bool GenerateAll = false)(
  +     An instance of the vibrant router.
  ++/
 VibrantRouter!GenerateAll Vibrant(bool GenerateAll = false)(
-	HTTPServerSettings settings, string prefix = null)
-{
+	HTTPServerSettings settings, string prefix = null) {
 	return new VibrantRouter!GenerateAll(settings, prefix);
 }

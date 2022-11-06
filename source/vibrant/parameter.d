@@ -1,4 +1,3 @@
-
 module vibrant.parameter;
 
 import std.algorithm;
@@ -10,20 +9,16 @@ import std.typetuple;
 
 import vibe.d;
 
-class ParameterMissing : Exception
-{
+class ParameterMissing : Exception {
 
-	this(string name)
-	{
+	this(string name) {
 		super("Missing parameter: " ~ name);
 	}
 
 }
 
-class Parameter
-{
-	private
-	{
+class Parameter {
+	private {
 		string _value;
 
 		Parameter[] _array;
@@ -31,63 +26,52 @@ class Parameter
 		Parameter[string] _assoc;
 	}
 
-	this()
-	{
+	this() {
 	}
 
 	/+ Helpers +/
 
-	private
-	{
-		Parameter opAssign(string param)
-		{
+	private {
+		Parameter opAssign(string param) {
 			_value = param;
 			return this;
 		}
 
-		Parameter opOpAssign(string op : "~")(string param)
-		{
+		Parameter opOpAssign(string op : "~")(string param) {
 			Parameter element = new Parameter();
 			this ~= (element = param);
 			return this;
 		}
 
-		Parameter opOpAssign(string op : "~")(Parameter param)
-		{
+		Parameter opOpAssign(string op : "~")(Parameter param) {
 			_array ~= param;
 			return this;
 		}
 
-		Parameter opIndexAssign(string param, string index)
-		{
+		Parameter opIndexAssign(string param, string index) {
 			Parameter element = new Parameter();
 			this[index] = (element = param);
 			return this;
 		}
 
-		Parameter opIndexAssign(Parameter param, string index)
-		{
+		Parameter opIndexAssign(Parameter param, string index) {
 			_assoc[index] = param;
 			return this;
 		}
 
-		Parameter opIndexOpAssign(string op : "~")(string param, string index)
-		{
+		Parameter opIndexOpAssign(string op : "~")(string param, string index) {
 			Parameter element = new Parameter();
 			this[index] ~= (element = param);
 			return this;
 		}
 
-		Parameter opIndexOpAssign(string op : "~")(Parameter param, string index)
-		{
+		Parameter opIndexOpAssign(string op : "~")(Parameter param, string index) {
 			_assoc[index] ~= param;
 			return this;
 		}
 
-		Parameter opIndexOpAssign(string op : "|")(lazy Parameter param, string index)
-		{
-			if(index !in _assoc)
-			{
+		Parameter opIndexOpAssign(string op : "|")(lazy Parameter param, string index) {
+			if (index !in _assoc) {
 				this[index] = param;
 			}
 
@@ -98,33 +82,26 @@ class Parameter
 	/+ Properties +/
 
 	@property
-	string value()
-	{
+	string value() {
 		return _value;
 	}
 
 	@property
-	Parameter[] array()
-	{
+	Parameter[] array() {
 		return _array;
 	}
 
 	@property
-	Parameter[string] assoc()
-	{
+	Parameter[string] assoc() {
 		return _assoc;
 	}
 
 	@property
-	bool isA(Type)()
-	{
-		try
-		{
-			cast(Type)this;
+	bool isA(Type)() {
+		try {
+			cast(Type) this;
 			return true;
-		}
-		catch(ConvException e)
-		{
+		} catch (ConvException e) {
 			return false;
 		}
 	}
@@ -133,105 +110,84 @@ class Parameter
 	alias isAn(Type) = isA!Type;
 
 	@property
-	Type as(Type)()
-	{
-		return cast(Type)this;
+	Type as(Type)() {
+		return cast(Type) this;
 	}
 
 	/+ Operators +/
 
-	Parameter *opBinaryRight(string op : "in")(string index)
-	{
+	Parameter* opBinaryRight(string op : "in")(string index) {
 		return index in _assoc;
 	}
 
-	bool opBinaryRight(string op : "!in")(string index)
-	{
+	bool opBinaryRight(string op : "!in")(string index) {
 		return index !in _assoc;
 	}
 
 	/++
 	 + Unspecialized type cast.
 	 ++/
-	Type opCast(Type)()
-	{
+	Type opCast(Type)() {
 		return _value.to!Type;
 	}
 
-	string opCast(Type : string)()
-	{
+	string opCast(Type : string)() {
 		return _value;
 	}
 
-	Parameter opCast(Type : Parameter)()
-	{
+	Parameter opCast(Type : Parameter)() {
 		return this;
 	}
 
-	string[] opCast(Type : string[])()
-	{
+	string[] opCast(Type : string[])() {
 		string[] elements;
 
-		foreach(element; _array)
-		{
+		foreach (element; _array) {
 			elements ~= element;
 		}
 
 		return elements;
 	}
 
-	Parameter[] opCast(Type : Parameter[])()
-	{
+	Parameter[] opCast(Type : Parameter[])() {
 		return _array;
 	}
 
-	string[string] opCast(Type : string[string])()
-	{
+	string[string] opCast(Type : string[string])() {
 		string[string] elements;
 
-		foreach(key, element; _assoc)
-		{
+		foreach (key, element; _assoc) {
 			elements[key] = element;
 		}
 
 		return elements;
 	}
 
-	Parameter[string] opCast(Type : Parameter[string])()
-	{
+	Parameter[string] opCast(Type : Parameter[string])() {
 		return _assoc;
 	}
 
-	Parameter opIndex(size_t index)
-	{
-		if(index < _array.length)
-		{
+	Parameter opIndex(size_t index) {
+		if (index < _array.length) {
 			return _array[index];
-		}
-		else
-		{
+		} else {
 			return null;
 		}
 	}
 
-	Parameter opIndex(string index)
-	{
+	Parameter opIndex(string index) {
 		auto ptr = index in this;
 		return ptr ? *ptr : null;
 	}
 
 	/+ Functions +/
 
-	Parameter require(string key)
-	{
+	Parameter require(string key) {
 		auto ptr = key in this;
 
-		if(ptr is null)
-		{
+		if (ptr is null) {
 			throw new ParameterMissing(key);
-		}
-		else
-		{
+		} else {
 			return *ptr;
 		}
 	}
@@ -239,23 +195,19 @@ class Parameter
 	/++
 	 + Returns a JSON-like string representation of the parameter.
 	 ++/
-	string toPrettyString()
-	{
+	string toPrettyString() {
 		string[] buffer;
 
 		// Include value component.
-		if(_value !is null)
-		{
+		if (_value !is null) {
 			buffer ~= format(`"%s"`, _value);
 		}
 
 		// Include array component.
-		if(_array.length > 0)
-		{
+		if (_array.length > 0) {
 			string[] tmp;
 
-			foreach(element; _array)
-			{
+			foreach (element; _array) {
 				tmp ~= element.toPrettyString;
 			}
 
@@ -263,12 +215,10 @@ class Parameter
 		}
 
 		// Include assoc component.
-		if(_assoc.length > 0)
-		{
+		if (_assoc.length > 0) {
 			string[] tmp;
 
-			foreach(key, element; _assoc)
-			{
+			foreach (key, element; _assoc) {
 				tmp ~= "\"" ~ key ~ "\" : " ~ element.toPrettyString;
 			}
 
@@ -278,14 +228,12 @@ class Parameter
 		return buffer.joiner(", ").text;
 	}
 
-	override string toString()
-	{
+	override string toString() {
 		return _value;
 	}
 }
 
-Parameter normalizeParameters(Parameter param, string name, string value)
-{
+Parameter normalizeParameters(Parameter param, string name, string value) {
 	static auto r1 = ctRegex!(r"^([^\[\]]+)");
 	static auto r2 = ctRegex!(r"^\[([^\[\]]+)\]");
 	static auto r3 = ctRegex!(r"^(?:\[\])+");
@@ -293,9 +241,8 @@ Parameter normalizeParameters(Parameter param, string name, string value)
 	Captures!string captures;
 
 	// Check for assoc or named parameters.
-	if(!(captures = name.matchFirst(r1)).empty ||
-		!(captures = name.matchFirst(r2)).empty)
-	{
+	if (!(captures = name.matchFirst(r1)).empty ||
+		!(captures = name.matchFirst(r2)).empty) {
 		string key = captures[1];
 		string after = captures.post;
 
@@ -305,61 +252,49 @@ Parameter normalizeParameters(Parameter param, string name, string value)
 		param[key] = normalizeParameters(
 			param[key], after, value
 		);
-	}
-	// Check for array parameters.
-	else if(!(captures = name.matchFirst(r3)).empty)
-	{
+	} // Check for array parameters.
+	else if (!(captures = name.matchFirst(r3)).empty) {
 		Parameter target = null;
 		string after = captures.post;
 
 		// Check if the array is empty.
-		if(param._array.length > 0)
-		{
+		if (param._array.length > 0) {
 			// Check if the next parameter is an assoc.
-			if(!(captures = after.matchFirst(r2)).empty)
-			{
+			if (!(captures = after.matchFirst(r2)).empty) {
 				Parameter last = param._array[$ - 1];
 
 				// Check if we should complete the last array.
-				if(captures[1] !in last)
-				{
+				if (captures[1]!in last) {
 					target = last;
 				}
 			}
 		}
 
 		// Check if we have a target.
-		if(target is null)
-		{
+		if (target is null) {
 			// Create a new element and append it.
 			param ~= normalizeParameters(
 				new Parameter(), after, value
 			);
-		}
-		else
-		{
+		} else {
 			// Add to the existing array.
 			normalizeParameters(
 				target, after, value
 			);
 		}
-	}
-	// Plain parameter.
-	else
-	{
+	} // Plain parameter.
+	else {
 		param = value;
 	}
-	
+
 	return param;
 }
 
 @property
-Parameter createParameters(string[] params, string[] values)
-{
+Parameter createParameters(string[] params, string[] values) {
 	auto assoc = new Parameter();
 
-	foreach(idx, param; params)
-	{
+	foreach (idx, param; params) {
 		normalizeParameters(assoc, param, values[idx]);
 	}
 
@@ -367,25 +302,21 @@ Parameter createParameters(string[] params, string[] values)
 }
 
 @property
-Parameter createParameters(HTTPServerRequest request)
-{
+Parameter createParameters(HTTPServerRequest request) {
 	auto assoc = new Parameter();
 
 	// Include form parameters.
-	foreach(key, value; request.form.byKeyValue)
-	{
+	foreach (key, value; request.form.byKeyValue) {
 		normalizeParameters(assoc, key, value);
 	}
 
 	// Include request parameters.
-	foreach(key, value; request.query.byKeyValue)
-	{
+	foreach (key, value; request.query.byKeyValue) {
 		normalizeParameters(assoc, key, value);
 	}
 
 	// Include URL parameters.
-	foreach(key, value; request.params.byKeyValue)
-	{
+	foreach (key, value; request.params.byKeyValue) {
 		normalizeParameters(assoc, key, value);
 	}
 
