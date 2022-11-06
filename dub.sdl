@@ -1,10 +1,12 @@
-name "vibrant-d"
+name "vibrant"
 description "A light web framework that works on top of vibe.d."
-authors "Mihail K"
-copyright "Copyright © 2015, Mihail K."
+authors "Mihail K" "redthing1"
+copyright "Copyright © 2015, Mihail K., Copyright © 2022, redthing1"
 license "MIT"
+
 dependency "vibe-d" version="~>0.9.5"
 dependency "dquery" version="~>0.1.8"
+
 configuration "demo" {
 	targetType "executable"
 	versions "VibeDefaultMain"
