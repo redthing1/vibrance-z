@@ -1,0 +1,7 @@
+name "hello"
+description "A minimal D application."
+authors "redthing1"
+copyright "Copyright © 2022, redthing1"
+license "proprietary"
+
+dependency "vibrant" path="../.."
