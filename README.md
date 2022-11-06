@@ -6,6 +6,10 @@
 
 vibrant.d is a light routing framework that mimicks the style of frameworks like Sinatra and Spark.
 
+### quick demo
+
+see [hello demo](demo/hello) for a quick demo.
+
 ### Hello World
 
 A plain 'Hello World!' application in vibe.d alone might look something like this,
