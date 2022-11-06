@@ -67,8 +67,8 @@ class BookController {
 void vibrant_web(T)(T vib) {
     with (vib) {
         // static files from wwwroot
-        // Get("*", serveStaticFiles("./wwwroot"));
         router.get("*", serveStaticFiles("./wwwroot"));
+        // router.get("/static/*", serveStaticFiles("./wwwroot", new HTTPFileServerSettings("/static")));
 
         Get("/hello", (req, res) => "Hello World!");
 
