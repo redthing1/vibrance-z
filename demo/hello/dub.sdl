@@ -8,5 +8,4 @@ dependency "vibrant" path="../.."
 
 configuration "demo" {
 	targetType "executable"
-	versions "VibeDefaultMain"
 }

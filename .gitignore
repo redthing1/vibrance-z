@@ -6,8 +6,8 @@ docs/
 vibrant.so
 vibrant.dylib
 vibrant.dll
-vibrant.a
-vibrant.lib
+*vibrant.a
+*vibrant.lib
 vibrant-test-*
 *.exe
 *.o
