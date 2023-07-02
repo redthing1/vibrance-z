@@ -1,5 +1,4 @@
 import std.stdio;
-import vibe.d;
 import vibrant.d;
 import web;
 

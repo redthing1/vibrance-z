@@ -4,7 +4,7 @@ import std.regex;
 import std.string;
 import std.traits;
 
-import vibe.d;
+import vibrant.vibe;
 
 /++
  + Response callback with no return value.

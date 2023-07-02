@@ -1,6 +1,6 @@
 module vibrant.d;
 
-public import vibe.d;
+public import vibrant.vibe;
 
 public import vibrant.helper;
 public import vibrant.parameter;

@@ -7,7 +7,7 @@ import std.traits;
 import std.typecons;
 import std.typetuple;
 
-import vibe.d;
+import vibrant.vibe;
 
 import vibrant.helper;
 

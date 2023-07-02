@@ -3,7 +3,7 @@ module web;
 import std.stdio;
 import std.typecons;
 import std.json;
-import vibe.d;
+import vibrant.vibe;
 import vibrant.d;
 import mir.ser.json : serializeJson;
 

@@ -7,7 +7,7 @@ import std.string;
 import std.traits;
 import std.typetuple;
 
-import vibe.d;
+import vibrant.vibe;
 
 class ParameterMissing : Exception {
 
