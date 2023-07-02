@@ -49,6 +49,8 @@ class VibrantRouter(bool GenerateAll = false) : HTTPServerRequestHandler {
 
 		}
 
+		HTTPServerSettings settings;
+
 		/++
 		 + A saved listener, used to stop and restart the server.
 		 ++/
@@ -116,16 +118,20 @@ class VibrantRouter(bool GenerateAll = false) : HTTPServerRequestHandler {
 		});
 	}
 
-	/++
-	 + Constructs a new vibrant router and starts listening for connections.
-	 +
-	 + Params:
-	 +     settings = The settings for the HTTP server.
-	 +     prefix   = The prefix to place all routes at.
-	 ++/
+	// /++
+	//  + Constructs a new vibrant router and starts listening for connections.
+	//  +
+	//  + Params:
+	//  +     settings = The settings for the HTTP server.
+	//  +     prefix   = The prefix to place all routes at.
+	//  ++/
+	// package this(HTTPServerSettings settings, string prefix) {
+	// 	this(new URLRouter(prefix));
+	// 	savedListener = listenHTTP(settings, router);
+	// }
 	package this(HTTPServerSettings settings, string prefix) {
+		this.settings = settings;
 		this(new URLRouter(prefix));
-		savedListener = listenHTTP(settings, router);
 	}
 
 	/++
@@ -155,7 +161,7 @@ class VibrantRouter(bool GenerateAll = false) : HTTPServerRequestHandler {
 
 		// Create a new child vibrant router, and pass along the listener.
 		auto newRouter = new VibrantRouter!GenerateAll(subrouter);
-		newRouter.savedListener = savedListener;
+		// newRouter.savedListener = savedListener;
 		return newRouter;
 	}
 
@@ -166,6 +172,16 @@ class VibrantRouter(bool GenerateAll = false) : HTTPServerRequestHandler {
 		router.rebuild;
 	}
 
+	/++ 
+	 + Starts the server.
+	 +/
+	void Start() {
+		savedListener = listenHTTP(this.settings, this.router);
+		// run event loop
+		runEventLoop();
+	}
+	alias start = Start;
+
 	/++
 	 + Instantly stops the server.
 	 ++/
@@ -173,6 +189,7 @@ class VibrantRouter(bool GenerateAll = false) : HTTPServerRequestHandler {
 		savedListener.get.stopListening;
 		savedListener.nullify;
 	}
+	alias stop = Stop;
 
 	/++
 	 + Attaches a handler to an exception type.

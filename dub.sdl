@@ -4,13 +4,13 @@ authors "Mihail K" "redthing1"
 copyright "Copyright © 2015, Mihail K., Copyright © 2022, redthing1"
 license "MIT"
 
-dependency "vibe-d" version="~>0.9.5"
-dependency "dquery" version="~>0.1.8"
+dependency "vibe-d" version="~>0.9.6"
 
+dependency "dquery" version="~>0.1.8"
 configuration "library" {
 	targetType "library"
 }
-
 configuration "unittest" {
 	dependency "silly" version="~>1.1.1"
+	targetType "library"
 }
