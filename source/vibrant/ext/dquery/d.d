@@ -4,12 +4,12 @@ module vibrant.ext.dquery.d;
 import std.traits;
 import std.typetuple;
 
-public import dquery.attribute;
-public import dquery.attributes;
-public import dquery.element;
-public import dquery.helper;
-public import dquery.overload;
-public import dquery.query;
+public import vibrant.ext.dquery.attribute;
+public import vibrant.ext.dquery.attributes;
+public import vibrant.ext.dquery.element;
+public import vibrant.ext.dquery.helper;
+public import vibrant.ext.dquery.overload;
+public import vibrant.ext.dquery.query;
 
 /++
  + Produces a query over the given type.

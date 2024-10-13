@@ -1,7 +1,7 @@
 
 module vibrant.ext.dquery.tests.validation;
 
-import dquery.d;
+import vibrant.ext.dquery.d;
 
 version(unittest)
 {

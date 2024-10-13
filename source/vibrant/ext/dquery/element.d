@@ -4,9 +4,9 @@ module vibrant.ext.dquery.element;
 import std.traits;
 import std.typetuple;
 
-import dquery.attribute;
-import dquery.attributes;
-import dquery.helper;
+import vibrant.ext.dquery.attribute;
+import vibrant.ext.dquery.attributes;
+import vibrant.ext.dquery.helper;
 
 struct DQueryElement(QueryType, string Name, alias Overload = null)
 {
@@ -284,7 +284,7 @@ struct DQueryElement(QueryType, string Name, alias Overload = null)
 	static auto query()()
 	if(isAggregate)
 	{
-		import dquery.d;
+		import vibrant.ext.dquery.d;
 		return query!(GetMember!(QueryType, Name));
 	}
 
@@ -294,7 +294,7 @@ struct DQueryElement(QueryType, string Name, alias Overload = null)
 	@property
 	static auto parent()()
 	{
-		import dquery.d;
+		import vibrant.ext.dquery.d;
 		return query!QueryType;
 	}
 

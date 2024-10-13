@@ -3,8 +3,8 @@ module vibrant.ext.dquery.attributes;
 
 import std.typetuple;
 
-import dquery.attribute;
-import dquery.helper;
+import vibrant.ext.dquery.attribute;
+import vibrant.ext.dquery.helper;
 
 struct DQueryAttributes(QueryType, Attributes...)
 {
@@ -57,7 +57,7 @@ struct DQueryAttributes(QueryType, Attributes...)
 	@property
 	static auto parent()()
 	{
-		import dquery.d;
+		import vibrant.ext.dquery.d;
 		return query!QueryType;
 	}
 

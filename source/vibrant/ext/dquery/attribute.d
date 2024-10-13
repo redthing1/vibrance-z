@@ -123,7 +123,7 @@ struct DQueryAttribute(alias Attribute)
 	@property
 	static auto query()()
 	{
-		import dquery.d;
+		import vibrant.ext.dquery.d;
 		return query!type;
 	}
 

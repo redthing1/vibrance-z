@@ -1,7 +1,7 @@
 
 module vibrant.ext.dquery.tests.regression;
 
-import dquery.d;
+import vibrant.ext.dquery.d;
 
 version(unittest)
 {

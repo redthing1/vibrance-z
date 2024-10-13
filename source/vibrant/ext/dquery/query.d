@@ -4,10 +4,10 @@ module vibrant.ext.dquery.query;
 import std.traits;
 import std.typetuple;
 
-import dquery.attribute;
-import dquery.attributes;
-import dquery.element;
-import dquery.helper;
+import vibrant.ext.dquery.attribute;
+import vibrant.ext.dquery.attributes;
+import vibrant.ext.dquery.element;
+import vibrant.ext.dquery.helper;
 
 struct DQuery(QueryType, QueryElements...)
 {
@@ -60,7 +60,7 @@ struct DQuery(QueryType, QueryElements...)
 	@property
 	static auto reset()()
 	{
-		import dquery.d;
+		import vibrant.ext.dquery.d;
 		return query!QueryType;
 	}
 

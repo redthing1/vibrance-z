@@ -3,7 +3,7 @@ module vibrant.routes;
 mixin template Routes(string ResourceName = "") {
 
 	import std.typetuple;
-	import dquery.d;
+	import vibrant.ext.dquery.d;
 
 	private {
 
