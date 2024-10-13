@@ -4,10 +4,10 @@ authors "Mihail K" "redthing1"
 copyright "Copyright © 2015, Mihail K., Copyright © 2022, redthing1"
 license "MIT"
 
-dependency "vibe-d:web" version="~>0.9.6"
-// dependency "vibe-d:data" version="~>0.9.6"
-// dependency "vibe-d:stream" version="~>0.9.6"
-// dependency "vibe-d:http" version="~>0.9.6"
+dependency "vibe-d:web" version="~>0.10.1"
+// dependency "vibe-d:data" version="~>0.10.1"
+// dependency "vibe-d:stream" version="~>0.10.1"
+// dependency "vibe-d:http" version="~>0.10.1"
 
 dependency "dquery" version="~>0.1.8"
 configuration "library" {
