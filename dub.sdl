@@ -4,10 +4,7 @@ authors "Mihail K" "redthing1"
 copyright "Copyright © 2015, Mihail K., Copyright © 2024, redthing1"
 license "MIT"
 
-dependency "vibe-d:web" version="~>0.10.1"
-// dependency "vibe-d:data" version="~>0.10.1"
-// dependency "vibe-d:stream" version="~>0.10.1"
-// dependency "vibe-d:http" version="~>0.10.1"
+dependency "vibe-d:web" version="~>0.10.2"
 
 configuration "library" {
 	targetType "library"
